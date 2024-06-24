@@ -45,6 +45,31 @@ public class CategoriasController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> AtualizarCategoria(int id)
+    {
+        var result = await _categoriaService.GetCategoriaPorId(id);
+
+        if (result is null)
+            return View("Error");
+
+        return View(result);
+    }
+    [HttpPost]
+    public async Task<ActionResult<CategoriaViewModel>> AtualizarCategoria(int id, CategoriaViewModel categoriaVM)
+    {
+        if (ModelState.IsValid)
+        {
+            var result = await _categoriaService.AtualizaCategoria(id, categoriaVM);
+
+            if (result)
+                return RedirectToAction(nameof(Index));
+        }
+
+        ViewBag.Erro = "Erro ao atualizar a categoria";
+        return View(categoriaVM);
+    }
+
+    [HttpGet]
     public async Task<ActionResult> DeletarCategoria(int id)
     {
         var result = await _categoriaService.GetCategoriaPorId(id);
